@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const config = require('./config/config').get(process.env.NODE_ENV);
 const app = express();
 
+
 app.use('/uploads',express.static('uploads'));
 
 mongoose.Promise = global.Promise;
@@ -23,6 +24,8 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(fileUpload());
 app.use(cors());
+
+app.use(express.static('client/build'));
 
 
 
@@ -190,6 +193,14 @@ app.delete('/api/delete_item',(req,res)=>{
         res.json(true)
     })
 })
+
+
+if(process.env.NODE_ENV === 'production'){
+    const path = require('path');
+    app.get('/*',(req,res)=>{
+        res.sendFile(path.resolve(__dirname,'../client','build','index.html'))
+    })
+}
 
 
 
